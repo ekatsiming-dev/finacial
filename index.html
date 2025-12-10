@@ -1,0 +1,388 @@
+import React, { useState } from 'react';
+import { 
+  Shield, 
+  Home, 
+  TrendingUp, 
+  Lock, 
+  Award, 
+  HeartHandshake, 
+  AlertTriangle, 
+  Target,
+  Zap,
+  Coffee,
+  Sun,
+  LayoutGrid,
+  MousePointer2
+} from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+
+/**
+ * BRAND COLORS (POP ART EDITION):
+ * High contrast, vibrant, playful but readable.
+ */
+const POP_COLORS = {
+  blue: '#3b82f6',   // Electric Blue
+  red: '#ff6b6b',    // Coral Red
+  yellow: '#fbbf24', // Sunshine Yellow
+  orange: '#fb923c', // Pop Orange
+  green: '#34d399',  // Mint Green
+  purple: '#a78bfa', // Grape Purple
+  black: '#18181b',  // Ink Black
+  bg: '#f4f1ea',     // Paper
+};
+
+const FinancialFortress = () => {
+  // State for Dynamic Center Display (HUD)
+  const [activeAsset, setActiveAsset] = useState<any>(null);
+
+  // Data with NEW POP COLORS
+  const assets = [
+    { name: '美國爸爸 (DRIP)', value: 1200000, color: POP_COLORS.blue, type: '進攻' },
+    { name: '台灣尚勇 (定期)', value: 190000, color: POP_COLORS.red, type: '進攻' },
+    { name: '小狗狗 (舊投)', value: 75000, color: POP_COLORS.orange, type: '進攻' },
+    { name: '小狗狗 (安神)', value: 375000, color: POP_COLORS.yellow, type: '防禦' },
+    { name: '郵局聚寶盆', value: 160000, color: POP_COLORS.green, type: '防禦' },
+    { name: '台銀 (薪轉)', value: 50000, color: POP_COLORS.purple, type: '防禦' },
+  ];
+
+  const totalAssets = assets.reduce((acc, curr) => acc + curr.value, 0);
+  const defensiveAssets = assets.filter(a => a.type === '防禦').reduce((acc, curr) => acc + curr.value, 0);
+  const offensiveAssets = assets.filter(a => a.type === '進攻').reduce((acc, curr) => acc + curr.value, 0);
+  
+  // Date Logic
+  const today = new Date();
+  const deadline = new Date('2029-07-01');
+  const diffTime = Math.abs(deadline.getTime() - today.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return (
+    <div className="min-h-screen bg-[#f4f1ea] text-[#18181b] font-sans pb-12 overflow-x-hidden selection:bg-[#ff6b6b] selection:text-white">
+      
+      {/* Texture Overlay (Grain) */}
+      <div className="fixed inset-0 opacity-[0.04] pointer-events-none z-50 mix-blend-multiply" 
+           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}>
+      </div>
+
+      {/* Header Section */}
+      <div className="border-b-4 border-black bg-white sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4 group cursor-pointer">
+            <div className="w-12 h-12 bg-[#ff6b6b] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-300">
+              <Shield className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black tracking-tight uppercase italic text-black group-hover:text-[#ff6b6b] transition-colors">
+                MY FORTRESS
+              </h1>
+              <p className="font-bold text-sm text-gray-500">資產守護日誌 Vol.2.3</p>
+            </div>
+          </div>
+          
+          <div className="bg-[#18181b] text-white px-6 py-2 border-2 border-black shadow-[4px_4px_0px_0px_#ff6b6b] font-bold text-lg rounded-full flex items-center gap-2 transform hover:scale-105 transition-transform">
+            <LayoutGrid className="w-4 h-4 text-[#ff6b6b]" />
+            Total: NT$ {totalAssets.toLocaleString()}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 mt-12 space-y-12 relative z-10">
+
+        {/* Hero Section: Chart & Key Metrics */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Main Chart Card */}
+          <div className="lg:col-span-7 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8 relative rounded-xl overflow-hidden min-h-[400px]">
+             {/* Decorative Background Pattern (Pop Dots) */}
+             <div className="absolute top-0 right-0 w-32 h-32 opacity-10" 
+                  style={{ backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '10px 10px' }}></div>
+             
+             <div className="flex justify-between items-start mb-6 relative z-10">
+               <h2 className="text-2xl font-black flex items-center gap-2">
+                 <span className="bg-black text-white px-2 py-1 transform -rotate-2 inline-block shadow-sm">01</span>
+                 資產版圖
+               </h2>
+               <div className="text-xs font-bold text-gray-400 flex items-center gap-1 border border-gray-200 px-2 py-1 rounded-full bg-gray-50">
+                 <MousePointer2 className="w-3 h-3" />
+                 HOVER SECTORS FOR INFO
+               </div>
+             </div>
+
+             <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
+               {/* Pie Chart Area with Dynamic Center */}
+               <div className="w-72 h-72 relative flex-shrink-0 group mx-auto md:mx-0">
+                 <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={assets}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={80}
+                        outerRadius={120}
+                        paddingAngle={3}
+                        dataKey="value"
+                        stroke="black"
+                        strokeWidth={2}
+                        onMouseEnter={(_, index) => setActiveAsset(assets[index])}
+                        onMouseLeave={() => setActiveAsset(null)}
+                      >
+                        {assets.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.color} 
+                            className="transition-all duration-300 cursor-pointer outline-none hover:opacity-100 opacity-90 hover:stroke-[3px]"
+                            style={{ filter: activeAsset === entry ? 'drop-shadow(0px 0px 8px rgba(0,0,0,0.2))' : 'none' }}
+                          />
+                        ))}
+                      </Pie>
+                      {/* No Tooltip Component Here - We use the center div instead */}
+                    </PieChart>
+                 </ResponsiveContainer>
+                 
+                 {/* Dynamic Center HUD */}
+                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all duration-200">
+                     {activeAsset ? (
+                       <div className="text-center animate-in fade-in zoom-in-95 duration-200">
+                         <div className="w-2 h-2 rounded-full mb-1 mx-auto" style={{ backgroundColor: activeAsset.color }}></div>
+                         <span className="text-xs font-bold text-gray-400 block mb-0.5 tracking-wider uppercase">Current</span>
+                         <span className="text-sm font-black text-black block leading-tight px-2">
+                           {activeAsset.name.split(' ')[0]}
+                         </span>
+                         <span className="text-2xl font-black font-mono mt-1 block" style={{ color: activeAsset.color }}>
+                           ${(activeAsset.value / 10000).toFixed(1)}萬
+                         </span>
+                       </div>
+                     ) : (
+                       <div className="bg-[#f4f1ea] p-4 rounded-full border-2 border-black/10 group-hover:scale-95 transition-transform">
+                          <Shield className="w-8 h-8 text-black/20" />
+                       </div>
+                     )}
+                 </div>
+               </div>
+
+               {/* Legend / Stats Cards (Pop Style) */}
+               <div className="flex-1 w-full space-y-4">
+                  {/* Offensive Stats */}
+                  <div className={`p-4 border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] rounded-lg transition-all duration-300 relative overflow-hidden group ${activeAsset?.type === '進攻' ? 'bg-[#3b82f6] text-white ring-2 ring-offset-2 ring-[#3b82f6]' : 'bg-[#eff6ff]'}`}>
+                    
+                    <div className="flex justify-between items-center mb-2 relative z-10">
+                      <span className={`font-black text-lg flex items-center gap-2 ${activeAsset?.type === '進攻' ? 'text-white' : 'text-[#1e40af]'}`}>
+                        <Zap className="w-5 h-5 fill-current" /> 進攻部隊
+                      </span>
+                      <span className={`font-bold px-2 border border-black rounded-md text-sm ${activeAsset?.type === '進攻' ? 'bg-white text-[#3b82f6]' : 'bg-white text-black'}`}>
+                        {((offensiveAssets/totalAssets)*100).toFixed(0)}%
+                      </span>
+                    </div>
+                    <div className={`text-3xl font-black relative z-10 tracking-tight ${activeAsset?.type === '進攻' ? 'text-white' : 'text-[#1e3a8a]'}`}>
+                      $ {offensiveAssets.toLocaleString()}
+                    </div>
+                  </div>
+
+                  {/* Defensive Stats */}
+                  <div className={`p-4 border-2 border-black shadow-[4px_4px_0px_0px_#34d399] rounded-lg transition-all duration-300 relative overflow-hidden ${activeAsset?.type === '防禦' ? 'bg-[#34d399] text-white ring-2 ring-offset-2 ring-[#34d399]' : 'bg-[#ecfdf5]'}`}>
+
+                    <div className="flex justify-between items-center mb-2 relative z-10">
+                      <span className={`font-black text-lg flex items-center gap-2 ${activeAsset?.type === '防禦' ? 'text-white' : 'text-[#065f46]'}`}>
+                        <Shield className="w-5 h-5 fill-current" /> 防禦工事
+                      </span>
+                      <span className={`font-bold px-2 border border-black rounded-md text-sm ${activeAsset?.type === '防禦' ? 'bg-white text-[#34d399]' : 'bg-white text-black'}`}>
+                        {((defensiveAssets/totalAssets)*100).toFixed(0)}%
+                      </span>
+                    </div>
+                    <div className={`text-3xl font-black relative z-10 tracking-tight ${activeAsset?.type === '防禦' ? 'text-white' : 'text-[#064e3b]'}`}>
+                      $ {defensiveAssets.toLocaleString()}
+                    </div>
+                  </div>
+               </div>
+             </div>
+          </div>
+
+          {/* Real Estate "Postcard" */}
+          <div className="lg:col-span-5 flex flex-col">
+            <div className="bg-[#ff6b6b] text-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rounded-xl flex-1 relative overflow-hidden group">
+               {/* Pattern */}
+               <div className="absolute inset-0 opacity-20" 
+                    style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 11px)' }}></div>
+               
+               <div className="relative z-10 h-full flex flex-col justify-between">
+                 <div>
+                   <div className="flex justify-between items-start">
+                     <div className="bg-white text-black border-2 border-black px-3 py-1 font-black text-sm uppercase transform -rotate-3 inline-block shadow-sm">
+                        HQ BASE
+                     </div>
+                     <Home className="w-10 h-10 text-white stroke-[2.5]" />
+                   </div>
+                   
+                   <h2 className="text-4xl font-black mt-6 leading-tight drop-shadow-[2px_2px_0px_rgba(0,0,0,0.5)]">
+                     台南<br/>核心堡壘
+                   </h2>
+                   <p className="font-bold mt-2 opacity-100 text-black bg-white/90 inline-block px-2 transform rotate-1 border border-black">
+                     30年透天 / 自用住宅
+                   </p>
+                 </div>
+
+                 <div className="mt-8 bg-black/20 backdrop-blur-sm p-4 border-2 border-black/10 rounded-lg group-hover:bg-black/30 transition-colors">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="bg-[#34d399] text-black p-1 rounded-full border border-black">
+                        <Target className="w-4 h-4 text-black" />
+                      </div>
+                      <span className="font-bold text-white shadow-black drop-shadow-md">2017 管線全面更新</span>
+                    </div>
+                    <p className="text-sm font-bold text-white/90 italic border-l-2 border-white pl-2">
+                      "家不是籌碼，是心靈的防空洞。"
+                    </p>
+                 </div>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Asset Cards Grid (Pop Stickers) */}
+        <div>
+           <h3 className="text-2xl font-black mb-6 flex items-center gap-3">
+             <span className="w-4 h-4 bg-black rounded-sm transform rotate-45 shrink-0"></span>
+             <span className="whitespace-nowrap">資產明細卡</span>
+             <span className="flex-1 h-1 bg-black rounded-full ml-4 opacity-10 border-b-2 border-dashed border-black/20 h-0"></span>
+           </h3>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              {/* Card 1: US Stock (Blue) */}
+              <div 
+                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('美國') ? '-translate-y-2 ring-2 ring-[#3b82f6]' : 'hover:-translate-y-2'}`}
+                onMouseEnter={() => setActiveAsset(assets[0])}
+                onMouseLeave={() => setActiveAsset(null)}
+              >
+                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
+                    <span className="font-black text-lg group-hover:text-[#3b82f6] transition-colors">美國爸爸</span>
+                    <div className="bg-[#3b82f6] p-1 border border-black rounded-md">
+                      <TrendingUp className="w-4 h-4 text-white" />
+                    </div>
+                 </div>
+                 <div className="text-3xl font-black text-black mb-2">{'>'} 120萬</div>
+                 <div className="inline-block bg-[#eff6ff] text-[#1d4ed8] text-xs font-bold px-2 py-1 border border-[#3b82f6] rounded-md">
+                   DRIP 自動滾存
+                 </div>
+              </div>
+
+              {/* Card 2: TW Stock (Red) */}
+              <div 
+                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#ff6b6b] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('台灣') ? '-translate-y-2 ring-2 ring-[#ff6b6b]' : 'hover:-translate-y-2'}`}
+                onMouseEnter={() => setActiveAsset(assets[1])}
+                onMouseLeave={() => setActiveAsset(null)}
+              >
+                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
+                    <span className="font-black text-lg group-hover:text-[#ff6b6b] transition-colors">台灣尚勇</span>
+                    <div className="bg-[#ff6b6b] p-1 border border-black rounded-md">
+                      <Award className="w-4 h-4 text-white" />
+                    </div>
+                 </div>
+                 <div className="text-3xl font-black text-black mb-2">~19萬</div>
+                 <div className="inline-block bg-[#fef2f2] text-[#b91c1c] text-xs font-bold px-2 py-1 border border-[#ff6b6b] rounded-md">
+                   每月 +10K
+                 </div>
+              </div>
+
+              {/* Card 3: Dog Bank (Yellow/Orange) */}
+              <div 
+                className={`bg-[#fffbeb] border-2 border-black shadow-[4px_4px_0px_0px_#fbbf24] p-5 rounded-lg transition-all duration-300 cursor-pointer relative overflow-hidden ${activeAsset?.name.includes('小狗狗') ? '-translate-y-2 ring-2 ring-[#fbbf24]' : 'hover:-translate-y-2'}`}
+                onMouseEnter={() => setActiveAsset(assets[3])} // Default to highlighting one of the dog assets
+                onMouseLeave={() => setActiveAsset(null)}
+              >
+                 {/* Decorative Circle */}
+                 <div className="absolute -top-6 -right-6 w-20 h-20 bg-[#fbbf24] rounded-full opacity-20 border border-black"></div>
+                 
+                 <div className="flex justify-between items-center mb-4 relative z-10">
+                    <span className="font-black text-lg text-black">小狗狗銀行</span>
+                    <HeartHandshake className="w-6 h-6 text-[#d97706]" />
+                 </div>
+                 <div className="text-3xl font-black text-black mb-3">45 萬</div>
+                 <div className="space-y-2 relative z-10">
+                    <div 
+                      className={`flex justify-between text-sm font-bold border-b border-black/10 border-dashed pb-1 p-1 rounded ${activeAsset?.name.includes('安神') ? 'bg-[#facc15]/20' : ''}`}
+                    >
+                      <span className="text-gray-600">安神金 (現金)</span>
+                      <span className="bg-[#fef3c7] px-1 border border-black/20 rounded">37.5萬</span>
+                    </div>
+                    <div 
+                      className={`flex justify-between text-sm font-bold p-1 rounded ${activeAsset?.name.includes('舊投') ? 'bg-[#fb923c]/20' : ''}`}
+                    >
+                      <span className="text-gray-600">舊投資</span>
+                      <span className="bg-[#ffedd5] px-1 border border-black/20 rounded">7.5萬</span>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Card 4: Post Office (Green) */}
+              <div 
+                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#34d399] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('郵局') ? '-translate-y-2 ring-2 ring-[#34d399]' : 'hover:-translate-y-2'}`}
+                onMouseEnter={() => setActiveAsset(assets[4])}
+                onMouseLeave={() => setActiveAsset(null)}
+              >
+                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
+                    <span className="font-black text-lg group-hover:text-[#059669] transition-colors">郵局聚寶盆</span>
+                    <div className="bg-[#34d399] p-1 border border-black rounded-md">
+                      <Lock className="w-4 h-4 text-black" />
+                    </div>
+                 </div>
+                 <div className="text-3xl font-black text-black mb-2">~16萬</div>
+                 <div className="inline-block bg-[#ecfdf5] text-[#047857] text-xs font-bold px-2 py-1 border border-[#34d399] rounded-md">
+                   最後防線
+                 </div>
+              </div>
+
+           </div>
+        </div>
+
+        {/* Warning Section (Hazard Style Pop) */}
+        <div className="bg-[#fbbf24] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rounded-xl mt-12 mb-8 relative group">
+           {/* Attention Badge */}
+           <div className="absolute -top-4 -left-4 bg-black text-[#fbbf24] px-4 py-2 font-black border-2 border-[#fbbf24] transform rotate-3 shadow-lg group-hover:rotate-6 transition-transform">
+              ATTENTION !!
+           </div>
+           
+           <div className="flex flex-col md:flex-row gap-8 items-center mt-2">
+              <div className="flex-1">
+                 <h3 className="text-2xl font-black flex items-center gap-3">
+                   <AlertTriangle className="w-8 h-8 fill-black text-[#fbbf24]" />
+                   2029 寬限期倒數
+                 </h3>
+                 <div className="mt-4 bg-white border-2 border-black p-4 rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                    <div className="flex items-end gap-2">
+                      <span className="text-5xl font-black tabular-nums text-black">{diffDays}</span>
+                      <span className="font-bold text-gray-500 mb-2">DAYS LEFT</span>
+                    </div>
+                    {/* Retro Progress Bar */}
+                    <div className="w-full h-4 bg-gray-200 border-2 border-black rounded-full mt-2 overflow-hidden relative">
+                       <div className="h-full bg-black absolute top-0 left-0" style={{ width: '40%' }}></div>
+                       {/* Striped pattern overlay on bar */}
+                       <div className="absolute inset-0 w-full h-full opacity-20" style={{backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, #fff 5px, #fff 10px)'}}></div>
+                    </div>
+                 </div>
+              </div>
+
+              <div className="flex-1 bg-white/80 border-2 border-black border-dashed p-5 rounded-lg transform rotate-1">
+                 <div className="flex items-center gap-2 mb-3 font-bold text-lg border-b-2 border-black pb-1">
+                    <Sun className="w-5 h-5 text-[#ff6b6b] fill-current" />
+                    <span>戰略筆記</span>
+                 </div>
+                 <ul className="list-disc list-inside font-bold text-gray-800 space-y-2 text-sm md:text-base">
+                    <li>現金防禦 <span className="bg-[#34d399] text-black border border-black px-1 rounded-sm">58.5萬</span> 足夠覆蓋2年差額。</li>
+                    <li>這是一場持久戰，目前補給充足。</li>
+                    <li>保持現狀，不要隨意動用安神金。</li>
+                 </ul>
+              </div>
+           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center font-bold text-gray-400 py-8 flex items-center justify-center gap-2 border-t-2 border-black/10">
+          <Coffee className="w-4 h-4" />
+          <span>DESIGNED FOR PEACE OF MIND</span>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default FinancialFortress;
