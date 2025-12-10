@@ -12,7 +12,8 @@ import {
   Coffee,
   Sun,
   LayoutGrid,
-  MousePointer2
+  MousePointer2,
+  PiggyBank
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
@@ -42,7 +43,7 @@ const FinancialFortress = () => {
     { name: '小狗狗 (舊投)', value: 75000, color: POP_COLORS.orange, type: '進攻' },
     { name: '小狗狗 (安神)', value: 375000, color: POP_COLORS.yellow, type: '防禦' },
     { name: '郵局聚寶盆', value: 160000, color: POP_COLORS.green, type: '防禦' },
-    { name: '台銀 (薪轉)', value: 50000, color: POP_COLORS.purple, type: '防禦' },
+    { name: '飽飽的台銀 (薪轉)', value: 50000, color: POP_COLORS.purple, type: '防禦' },
   ];
 
   const totalAssets = assets.reduce((acc, curr) => acc + curr.value, 0);
@@ -74,7 +75,7 @@ const FinancialFortress = () => {
               <h1 className="text-3xl font-black tracking-tight uppercase italic text-black group-hover:text-[#ff6b6b] transition-colors">
                 MY FORTRESS
               </h1>
-              <p className="font-bold text-sm text-gray-500">資產守護日誌 Vol.2.3</p>
+              <p className="font-bold text-sm text-gray-500">資產守護日誌 Vol.2.4</p>
             </div>
           </div>
           
@@ -216,7 +217,7 @@ const FinancialFortress = () => {
                      台南<br/>核心堡壘
                    </h2>
                    <p className="font-bold mt-2 opacity-100 text-black bg-white/90 inline-block px-2 transform rotate-1 border border-black">
-                     30年透天 / 自用住宅
+                     30年大樓 / 自用住宅
                    </p>
                  </div>
 
@@ -244,7 +245,8 @@ const FinancialFortress = () => {
              <span className="flex-1 h-1 bg-black rounded-full ml-4 opacity-10 border-b-2 border-dashed border-black/20 h-0"></span>
            </h3>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+           {/* Updated grid for more items */}
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               
               {/* Card 1: US Stock (Blue) */}
               <div 
@@ -300,7 +302,7 @@ const FinancialFortress = () => {
                     <div 
                       className={`flex justify-between text-sm font-bold border-b border-black/10 border-dashed pb-1 p-1 rounded ${activeAsset?.name.includes('安神') ? 'bg-[#facc15]/20' : ''}`}
                     >
-                      <span className="text-gray-600">安神金 (現金)</span>
+                      <span className="text-gray-600">安神金 <span className="text-xs font-normal text-gray-500">(含15萬定存)</span></span>
                       <span className="bg-[#fef3c7] px-1 border border-black/20 rounded">37.5萬</span>
                     </div>
                     <div 
@@ -327,6 +329,24 @@ const FinancialFortress = () => {
                  <div className="text-3xl font-black text-black mb-2">~16萬</div>
                  <div className="inline-block bg-[#ecfdf5] text-[#047857] text-xs font-bold px-2 py-1 border border-[#34d399] rounded-md">
                    最後防線
+                 </div>
+              </div>
+
+               {/* Card 5: Bank of Taiwan (Purple) */}
+               <div 
+                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#a78bfa] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('台銀') ? '-translate-y-2 ring-2 ring-[#a78bfa]' : 'hover:-translate-y-2'}`}
+                onMouseEnter={() => setActiveAsset(assets[5])}
+                onMouseLeave={() => setActiveAsset(null)}
+              >
+                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
+                    <span className="font-black text-lg group-hover:text-[#7c3aed] transition-colors">飽飽的台銀</span>
+                    <div className="bg-[#a78bfa] p-1 border border-black rounded-md">
+                      <PiggyBank className="w-4 h-4 text-white" />
+                    </div>
+                 </div>
+                 <div className="text-3xl font-black text-black mb-2">~5萬</div>
+                 <div className="inline-block bg-[#f3e8ff] text-[#6d28d9] text-xs font-bold px-2 py-1 border border-[#a78bfa] rounded-md">
+                   薪轉現金
                  </div>
               </div>
 
