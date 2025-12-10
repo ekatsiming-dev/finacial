@@ -1,408 +1,650 @@
-import React, { useState } from 'react';
-import { 
-  Shield, 
-  Home, 
-  TrendingUp, 
-  Lock, 
-  Award, 
-  HeartHandshake, 
-  AlertTriangle, 
-  Target,
-  Zap,
-  Coffee,
-  Sun,
-  LayoutGrid,
-  MousePointer2,
-  PiggyBank
-} from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Fortress V2.9 - Strategic Roadmap Edition</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-/**
- * BRAND COLORS (POP ART EDITION):
- * High contrast, vibrant, playful but readable.
- */
-const POP_COLORS = {
-  blue: '#3b82f6',   // Electric Blue
-  red: '#ff6b6b',    // Coral Red
-  yellow: '#fbbf24', // Sunshine Yellow
-  orange: '#fb923c', // Pop Orange
-  green: '#34d399',  // Mint Green
-  purple: '#a78bfa', // Grape Purple
-  black: '#18181b',  // Ink Black
-  bg: '#f4f1ea',     // Paper
-};
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-const FinancialFortress = () => {
-  // State for Dynamic Center Display (HUD)
-  const [activeAsset, setActiveAsset] = useState<any>(null);
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-  // Data with NEW POP COLORS
-  const assets = [
-    { name: '美國爸爸 (DRIP)', value: 1200000, color: POP_COLORS.blue, type: '進攻' },
-    { name: '台灣尚勇 (定期)', value: 190000, color: POP_COLORS.red, type: '進攻' },
-    { name: '小狗狗 (舊投)', value: 75000, color: POP_COLORS.orange, type: '進攻' },
-    { name: '小狗狗 (安神)', value: 375000, color: POP_COLORS.yellow, type: '防禦' },
-    { name: '郵局聚寶盆', value: 160000, color: POP_COLORS.green, type: '防禦' },
-    { name: '飽飽的台銀 (薪轉)', value: 50000, color: POP_COLORS.purple, type: '防禦' },
-  ];
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f4f1ea;
+            color: #18181b;
+            overflow-x: hidden;
+        }
+        
+        .font-mono-retro {
+            font-family: 'Share Tech Mono', monospace;
+        }
 
-  const totalAssets = assets.reduce((acc, curr) => acc + curr.value, 0);
-  const defensiveAssets = assets.filter(a => a.type === '防禦').reduce((acc, curr) => acc + curr.value, 0);
-  const offensiveAssets = assets.filter(a => a.type === '進攻').reduce((acc, curr) => acc + curr.value, 0);
-  
-  // Date Logic
-  const today = new Date();
-  const deadline = new Date('2029-07-01');
-  const diffTime = Math.abs(deadline.getTime() - today.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f4f1ea; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #18181b; 
+            border: 2px solid #f4f1ea;
+            border-radius: 5px;
+        }
 
-  return (
-    <div className="min-h-screen bg-[#f4f1ea] text-[#18181b] font-sans pb-12 overflow-x-hidden selection:bg-[#ff6b6b] selection:text-white">
-      
-      {/* Texture Overlay (Grain) */}
-      <div className="fixed inset-0 opacity-[0.04] pointer-events-none z-50 mix-blend-multiply" 
-           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}>
-      </div>
+        /* Animation utilities */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* CRT Scanline Effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            animation: scanline 10s linear infinite;
+        }
+        
+        /* Typing Cursor Blink */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
 
-      {/* Header Section */}
-      <div className="border-b-4 border-black bg-white sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4 group cursor-pointer">
-            <div className="w-12 h-12 bg-[#ff6b6b] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-300">
-              <Shield className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black tracking-tight uppercase italic text-black group-hover:text-[#ff6b6b] transition-colors">
-                MY FORTRESS
-              </h1>
-              <p className="font-bold text-sm text-gray-500">資產守護日誌 Vol.2.4</p>
-            </div>
-          </div>
-          
-          <div className="bg-[#18181b] text-white px-6 py-2 border-2 border-black shadow-[4px_4px_0px_0px_#ff6b6b] font-bold text-lg rounded-full flex items-center gap-2 transform hover:scale-105 transition-transform">
-            <LayoutGrid className="w-4 h-4 text-[#ff6b6b]" />
-            Total: NT$ {totalAssets.toLocaleString()}
-          </div>
-        </div>
-      </div>
+        /* Pop Art Colors Helper Classes */
+        .bg-pop-blue { background-color: #3b82f6; }
+        .bg-pop-red { background-color: #ff6b6b; }
+        .bg-pop-yellow { background-color: #fbbf24; }
+        .bg-pop-orange { background-color: #fb923c; }
+        .bg-pop-green { background-color: #34d399; }
+        .bg-pop-purple { background-color: #a78bfa; }
+    </style>
+</head>
+<body class="selection:bg-[#ff6b6b] selection:text-white pb-12">
 
-      <div className="max-w-7xl mx-auto px-4 mt-12 space-y-12 relative z-10">
-
-        {/* Hero Section: Chart & Key Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Main Chart Card */}
-          <div className="lg:col-span-7 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8 relative rounded-xl overflow-hidden min-h-[400px]">
-             {/* Decorative Background Pattern (Pop Dots) */}
-             <div className="absolute top-0 right-0 w-32 h-32 opacity-10" 
-                  style={{ backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '10px 10px' }}></div>
-             
-             <div className="flex justify-between items-start mb-6 relative z-10">
-               <h2 className="text-2xl font-black flex items-center gap-2">
-                 <span className="bg-black text-white px-2 py-1 transform -rotate-2 inline-block shadow-sm">01</span>
-                 資產版圖
-               </h2>
-               <div className="text-xs font-bold text-gray-400 flex items-center gap-1 border border-gray-200 px-2 py-1 rounded-full bg-gray-50">
-                 <MousePointer2 className="w-3 h-3" />
-                 HOVER SECTORS FOR INFO
-               </div>
-             </div>
-
-             <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
-               {/* Pie Chart Area with Dynamic Center */}
-               <div className="w-72 h-72 relative flex-shrink-0 group mx-auto md:mx-0">
-                 <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={assets}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={80}
-                        outerRadius={120}
-                        paddingAngle={3}
-                        dataKey="value"
-                        stroke="black"
-                        strokeWidth={2}
-                        onMouseEnter={(_, index) => setActiveAsset(assets[index])}
-                        onMouseLeave={() => setActiveAsset(null)}
-                      >
-                        {assets.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.color} 
-                            className="transition-all duration-300 cursor-pointer outline-none hover:opacity-100 opacity-90 hover:stroke-[3px]"
-                            style={{ filter: activeAsset === entry ? 'drop-shadow(0px 0px 8px rgba(0,0,0,0.2))' : 'none' }}
-                          />
-                        ))}
-                      </Pie>
-                      {/* No Tooltip Component Here - We use the center div instead */}
-                    </PieChart>
-                 </ResponsiveContainer>
-                 
-                 {/* Dynamic Center HUD */}
-                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all duration-200">
-                     {activeAsset ? (
-                       <div className="text-center animate-in fade-in zoom-in-95 duration-200">
-                         <div className="w-2 h-2 rounded-full mb-1 mx-auto" style={{ backgroundColor: activeAsset.color }}></div>
-                         <span className="text-xs font-bold text-gray-400 block mb-0.5 tracking-wider uppercase">Current</span>
-                         <span className="text-sm font-black text-black block leading-tight px-2">
-                           {activeAsset.name.split(' ')[0]}
-                         </span>
-                         <span className="text-2xl font-black font-mono mt-1 block" style={{ color: activeAsset.color }}>
-                           ${(activeAsset.value / 10000).toFixed(1)}萬
-                         </span>
-                       </div>
-                     ) : (
-                       <div className="bg-[#f4f1ea] p-4 rounded-full border-2 border-black/10 group-hover:scale-95 transition-transform">
-                          <Shield className="w-8 h-8 text-black/20" />
-                       </div>
-                     )}
-                 </div>
-               </div>
-
-               {/* Legend / Stats Cards (Pop Style) */}
-               <div className="flex-1 w-full space-y-4">
-                  {/* Offensive Stats */}
-                  <div className={`p-4 border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] rounded-lg transition-all duration-300 relative overflow-hidden group ${activeAsset?.type === '進攻' ? 'bg-[#3b82f6] text-white ring-2 ring-offset-2 ring-[#3b82f6]' : 'bg-[#eff6ff]'}`}>
-                    
-                    <div className="flex justify-between items-center mb-2 relative z-10">
-                      <span className={`font-black text-lg flex items-center gap-2 ${activeAsset?.type === '進攻' ? 'text-white' : 'text-[#1e40af]'}`}>
-                        <Zap className="w-5 h-5 fill-current" /> 進攻部隊
-                      </span>
-                      <span className={`font-bold px-2 border border-black rounded-md text-sm ${activeAsset?.type === '進攻' ? 'bg-white text-[#3b82f6]' : 'bg-white text-black'}`}>
-                        {((offensiveAssets/totalAssets)*100).toFixed(0)}%
-                      </span>
-                    </div>
-                    <div className={`text-3xl font-black relative z-10 tracking-tight ${activeAsset?.type === '進攻' ? 'text-white' : 'text-[#1e3a8a]'}`}>
-                      $ {offensiveAssets.toLocaleString()}
-                    </div>
-                  </div>
-
-                  {/* Defensive Stats */}
-                  <div className={`p-4 border-2 border-black shadow-[4px_4px_0px_0px_#34d399] rounded-lg transition-all duration-300 relative overflow-hidden ${activeAsset?.type === '防禦' ? 'bg-[#34d399] text-white ring-2 ring-offset-2 ring-[#34d399]' : 'bg-[#ecfdf5]'}`}>
-
-                    <div className="flex justify-between items-center mb-2 relative z-10">
-                      <span className={`font-black text-lg flex items-center gap-2 ${activeAsset?.type === '防禦' ? 'text-white' : 'text-[#065f46]'}`}>
-                        <Shield className="w-5 h-5 fill-current" /> 防禦工事
-                      </span>
-                      <span className={`font-bold px-2 border border-black rounded-md text-sm ${activeAsset?.type === '防禦' ? 'bg-white text-[#34d399]' : 'bg-white text-black'}`}>
-                        {((defensiveAssets/totalAssets)*100).toFixed(0)}%
-                      </span>
-                    </div>
-                    <div className={`text-3xl font-black relative z-10 tracking-tight ${activeAsset?.type === '防禦' ? 'text-white' : 'text-[#064e3b]'}`}>
-                      $ {defensiveAssets.toLocaleString()}
-                    </div>
-                  </div>
-               </div>
-             </div>
-          </div>
-
-          {/* Real Estate "Postcard" */}
-          <div className="lg:col-span-5 flex flex-col">
-            <div className="bg-[#ff6b6b] text-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rounded-xl flex-1 relative overflow-hidden group">
-               {/* Pattern */}
-               <div className="absolute inset-0 opacity-20" 
-                    style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 11px)' }}></div>
-               
-               <div className="relative z-10 h-full flex flex-col justify-between">
-                 <div>
-                   <div className="flex justify-between items-start">
-                     <div className="bg-white text-black border-2 border-black px-3 py-1 font-black text-sm uppercase transform -rotate-3 inline-block shadow-sm">
-                        HQ BASE
-                     </div>
-                     <Home className="w-10 h-10 text-white stroke-[2.5]" />
-                   </div>
-                   
-                   <h2 className="text-4xl font-black mt-6 leading-tight drop-shadow-[2px_2px_0px_rgba(0,0,0,0.5)]">
-                     台南<br/>核心堡壘
-                   </h2>
-                   <p className="font-bold mt-2 opacity-100 text-black bg-white/90 inline-block px-2 transform rotate-1 border border-black">
-                     30年大樓 / 自用住宅
-                   </p>
-                 </div>
-
-                 <div className="mt-8 bg-black/20 backdrop-blur-sm p-4 border-2 border-black/10 rounded-lg group-hover:bg-black/30 transition-colors">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-[#34d399] text-black p-1 rounded-full border border-black">
-                        <Target className="w-4 h-4 text-black" />
-                      </div>
-                      <span className="font-bold text-white shadow-black drop-shadow-md">2017 管線全面更新</span>
-                    </div>
-                    <p className="text-sm font-bold text-white/90 italic border-l-2 border-white pl-2">
-                      "家不是籌碼，是心靈的防空洞。"
-                    </p>
-                 </div>
-               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Asset Cards Grid (Pop Stickers) */}
-        <div>
-           <h3 className="text-2xl font-black mb-6 flex items-center gap-3">
-             <span className="w-4 h-4 bg-black rounded-sm transform rotate-45 shrink-0"></span>
-             <span className="whitespace-nowrap">資產明細卡</span>
-             <span className="flex-1 h-1 bg-black rounded-full ml-4 opacity-10 border-b-2 border-dashed border-black/20 h-0"></span>
-           </h3>
-
-           {/* Updated grid for more items */}
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              
-              {/* Card 1: US Stock (Blue) */}
-              <div 
-                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('美國') ? '-translate-y-2 ring-2 ring-[#3b82f6]' : 'hover:-translate-y-2'}`}
-                onMouseEnter={() => setActiveAsset(assets[0])}
-                onMouseLeave={() => setActiveAsset(null)}
-              >
-                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
-                    <span className="font-black text-lg group-hover:text-[#3b82f6] transition-colors">美國爸爸</span>
-                    <div className="bg-[#3b82f6] p-1 border border-black rounded-md">
-                      <TrendingUp className="w-4 h-4 text-white" />
-                    </div>
-                 </div>
-                 <div className="text-3xl font-black text-black mb-2">{'>'} 120萬</div>
-                 <div className="inline-block bg-[#eff6ff] text-[#1d4ed8] text-xs font-bold px-2 py-1 border border-[#3b82f6] rounded-md">
-                   DRIP 自動滾存
-                 </div>
-              </div>
-
-              {/* Card 2: TW Stock (Red) */}
-              <div 
-                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#ff6b6b] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('台灣') ? '-translate-y-2 ring-2 ring-[#ff6b6b]' : 'hover:-translate-y-2'}`}
-                onMouseEnter={() => setActiveAsset(assets[1])}
-                onMouseLeave={() => setActiveAsset(null)}
-              >
-                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
-                    <span className="font-black text-lg group-hover:text-[#ff6b6b] transition-colors">台灣尚勇</span>
-                    <div className="bg-[#ff6b6b] p-1 border border-black rounded-md">
-                      <Award className="w-4 h-4 text-white" />
-                    </div>
-                 </div>
-                 <div className="text-3xl font-black text-black mb-2">~19萬</div>
-                 <div className="inline-block bg-[#fef2f2] text-[#b91c1c] text-xs font-bold px-2 py-1 border border-[#ff6b6b] rounded-md">
-                   每月 +10K
-                 </div>
-              </div>
-
-              {/* Card 3: Dog Bank (Yellow/Orange) */}
-              <div 
-                className={`bg-[#fffbeb] border-2 border-black shadow-[4px_4px_0px_0px_#fbbf24] p-5 rounded-lg transition-all duration-300 cursor-pointer relative overflow-hidden ${activeAsset?.name.includes('小狗狗') ? '-translate-y-2 ring-2 ring-[#fbbf24]' : 'hover:-translate-y-2'}`}
-                onMouseEnter={() => setActiveAsset(assets[3])} // Default to highlighting one of the dog assets
-                onMouseLeave={() => setActiveAsset(null)}
-              >
-                 {/* Decorative Circle */}
-                 <div className="absolute -top-6 -right-6 w-20 h-20 bg-[#fbbf24] rounded-full opacity-20 border border-black"></div>
-                 
-                 <div className="flex justify-between items-center mb-4 relative z-10">
-                    <span className="font-black text-lg text-black">小狗狗銀行</span>
-                    <HeartHandshake className="w-6 h-6 text-[#d97706]" />
-                 </div>
-                 <div className="text-3xl font-black text-black mb-3">45 萬</div>
-                 <div className="space-y-2 relative z-10">
-                    <div 
-                      className={`flex justify-between text-sm font-bold border-b border-black/10 border-dashed pb-1 p-1 rounded ${activeAsset?.name.includes('安神') ? 'bg-[#facc15]/20' : ''}`}
-                    >
-                      <span className="text-gray-600">安神金 <span className="text-xs font-normal text-gray-500">(含15萬定存)</span></span>
-                      <span className="bg-[#fef3c7] px-1 border border-black/20 rounded">37.5萬</span>
-                    </div>
-                    <div 
-                      className={`flex justify-between text-sm font-bold p-1 rounded ${activeAsset?.name.includes('舊投') ? 'bg-[#fb923c]/20' : ''}`}
-                    >
-                      <span className="text-gray-600">舊投資</span>
-                      <span className="bg-[#ffedd5] px-1 border border-black/20 rounded">7.5萬</span>
-                    </div>
-                 </div>
-              </div>
-
-              {/* Card 4: Post Office (Green) */}
-              <div 
-                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#34d399] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('郵局') ? '-translate-y-2 ring-2 ring-[#34d399]' : 'hover:-translate-y-2'}`}
-                onMouseEnter={() => setActiveAsset(assets[4])}
-                onMouseLeave={() => setActiveAsset(null)}
-              >
-                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
-                    <span className="font-black text-lg group-hover:text-[#059669] transition-colors">郵局聚寶盆</span>
-                    <div className="bg-[#34d399] p-1 border border-black rounded-md">
-                      <Lock className="w-4 h-4 text-black" />
-                    </div>
-                 </div>
-                 <div className="text-3xl font-black text-black mb-2">~16萬</div>
-                 <div className="inline-block bg-[#ecfdf5] text-[#047857] text-xs font-bold px-2 py-1 border border-[#34d399] rounded-md">
-                   最後防線
-                 </div>
-              </div>
-
-               {/* Card 5: Bank of Taiwan (Purple) */}
-               <div 
-                className={`bg-white border-2 border-black shadow-[4px_4px_0px_0px_#a78bfa] p-5 rounded-lg transition-all duration-300 cursor-pointer group ${activeAsset?.name.includes('台銀') ? '-translate-y-2 ring-2 ring-[#a78bfa]' : 'hover:-translate-y-2'}`}
-                onMouseEnter={() => setActiveAsset(assets[5])}
-                onMouseLeave={() => setActiveAsset(null)}
-              >
-                 <div className="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2">
-                    <span className="font-black text-lg group-hover:text-[#7c3aed] transition-colors">飽飽的台銀</span>
-                    <div className="bg-[#a78bfa] p-1 border border-black rounded-md">
-                      <PiggyBank className="w-4 h-4 text-white" />
-                    </div>
-                 </div>
-                 <div className="text-3xl font-black text-black mb-2">~5萬</div>
-                 <div className="inline-block bg-[#f3e8ff] text-[#6d28d9] text-xs font-bold px-2 py-1 border border-[#a78bfa] rounded-md">
-                   薪轉現金
-                 </div>
-              </div>
-
-           </div>
-        </div>
-
-        {/* Warning Section (Hazard Style Pop) */}
-        <div className="bg-[#fbbf24] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rounded-xl mt-12 mb-8 relative group">
-           {/* Attention Badge */}
-           <div className="absolute -top-4 -left-4 bg-black text-[#fbbf24] px-4 py-2 font-black border-2 border-[#fbbf24] transform rotate-3 shadow-lg group-hover:rotate-6 transition-transform">
-              ATTENTION !!
-           </div>
-           
-           <div className="flex flex-col md:flex-row gap-8 items-center mt-2">
-              <div className="flex-1">
-                 <h3 className="text-2xl font-black flex items-center gap-3">
-                   <AlertTriangle className="w-8 h-8 fill-black text-[#fbbf24]" />
-                   2029 寬限期倒數
-                 </h3>
-                 <div className="mt-4 bg-white border-2 border-black p-4 rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-                    <div className="flex items-end gap-2">
-                      <span className="text-5xl font-black tabular-nums text-black">{diffDays}</span>
-                      <span className="font-bold text-gray-500 mb-2">DAYS LEFT</span>
-                    </div>
-                    {/* Retro Progress Bar */}
-                    <div className="w-full h-4 bg-gray-200 border-2 border-black rounded-full mt-2 overflow-hidden relative">
-                       <div className="h-full bg-black absolute top-0 left-0" style={{ width: '40%' }}></div>
-                       {/* Striped pattern overlay on bar */}
-                       <div className="absolute inset-0 w-full h-full opacity-20" style={{backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, #fff 5px, #fff 10px)'}}></div>
-                    </div>
-                 </div>
-              </div>
-
-              <div className="flex-1 bg-white/80 border-2 border-black border-dashed p-5 rounded-lg transform rotate-1">
-                 <div className="flex items-center gap-2 mb-3 font-bold text-lg border-b-2 border-black pb-1">
-                    <Sun className="w-5 h-5 text-[#ff6b6b] fill-current" />
-                    <span>戰略筆記</span>
-                 </div>
-                 <ul className="list-disc list-inside font-bold text-gray-800 space-y-2 text-sm md:text-base">
-                    <li>現金防禦 <span className="bg-[#34d399] text-black border border-black px-1 rounded-sm">58.5萬</span> 足夠覆蓋2年差額。</li>
-                    <li>這是一場持久戰，目前補給充足。</li>
-                    <li>保持現狀，不要隨意動用安神金。</li>
-                 </ul>
-              </div>
-           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center font-bold text-gray-400 py-8 flex items-center justify-center gap-2 border-t-2 border-black/10">
-          <Coffee className="w-4 h-4" />
-          <span>DESIGNED FOR PEACE OF MIND</span>
-        </div>
-
-      </div>
+    <!-- Texture Overlay (Grain) -->
+    <div class="fixed inset-0 opacity-[0.04] pointer-events-none z-50 mix-blend-multiply" 
+         style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E')">
     </div>
-  );
-};
 
-export default FinancialFortress;
+    <!-- Header Section -->
+    <div class="border-b-4 border-black bg-white sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4 group cursor-pointer">
+                <div class="w-12 h-12 bg-[#ff6b6b] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-300">
+                    <i data-lucide="shield" class="w-7 h-7 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight uppercase italic text-black group-hover:text-[#ff6b6b] transition-colors">
+                        MY FORTRESS
+                    </h1>
+                    <p class="font-bold text-sm text-gray-500">資產守護日誌 Vol.2.9</p>
+                </div>
+            </div>
+            
+            <div class="bg-[#18181b] text-white px-6 py-2 border-2 border-black shadow-[4px_4px_0px_0px_#ff6b6b] font-bold text-lg rounded-full flex items-center gap-2 transform hover:scale-105 transition-transform">
+                <i data-lucide="layout-grid" class="w-4 h-4 text-[#ff6b6b]"></i>
+                <span id="total-assets-display">Total: NT$ ...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 mt-12 space-y-12 relative z-10">
+
+        <!-- Hero Section: Chart & Key Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Main Chart Card -->
+            <div class="lg:col-span-7 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8 relative rounded-xl overflow-hidden min-h-[400px]">
+                <!-- Decorative Background Pattern -->
+                <div class="absolute top-0 right-0 w-32 h-32 opacity-10" 
+                     style="background-image: radial-gradient(#000 2px, transparent 2px); background-size: 10px 10px;"></div>
+                
+                <div class="flex justify-between items-start mb-6 relative z-10">
+                    <h2 class="text-2xl font-black flex items-center gap-2">
+                        <span class="bg-black text-white px-2 py-1 transform -rotate-2 inline-block shadow-sm">01</span>
+                        金融資產版圖
+                    </h2>
+                    <div class="text-xs font-bold text-gray-400 flex items-center gap-1 border border-gray-200 px-2 py-1 rounded-full bg-gray-50">
+                        <i data-lucide="mouse-pointer-2" class="w-3 h-3"></i>
+                        HOVER SECTORS
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                    <!-- Pie Chart Area with Dynamic Center -->
+                    <div class="w-72 h-72 relative flex-shrink-0 mx-auto md:mx-0">
+                        <canvas id="assetChart"></canvas>
+                        
+                        <!-- Dynamic Center HUD -->
+                        <div id="chart-hud" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all duration-200">
+                            <!-- Default State -->
+                            <div id="hud-default" class="bg-[#f4f1ea] p-4 rounded-full border-2 border-black/10">
+                                <i data-lucide="shield" class="w-8 h-8 text-black/20"></i>
+                            </div>
+                            <!-- Active State (Hidden by default) -->
+                            <div id="hud-active" class="text-center hidden">
+                                <div id="hud-color-dot" class="w-2 h-2 rounded-full mb-1 mx-auto bg-black"></div>
+                                <span class="text-xs font-bold text-gray-400 block mb-0.5 tracking-wider uppercase">Current</span>
+                                <span id="hud-name" class="text-sm font-black text-black block leading-tight px-2">Name</span>
+                                <span id="hud-value" class="text-2xl font-black font-mono mt-1 block">Value</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards (Offensive/Defensive) -->
+                    <div class="flex-1 w-full space-y-4">
+                        <!-- Offensive Stats -->
+                        <div id="stat-offensive" class="p-4 border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] rounded-lg transition-all duration-300 relative overflow-hidden bg-[#eff6ff]">
+                            <div class="flex justify-between items-center mb-2 relative z-10">
+                                <span class="font-black text-lg flex items-center gap-2 text-[#1e40af]" id="stat-offensive-label">
+                                    <i data-lucide="zap" class="w-5 h-5 fill-current"></i> 攻擊部隊
+                                </span>
+                                <span class="font-bold px-2 border border-black rounded-md text-sm bg-white text-black" id="stat-offensive-pct">
+                                    --%
+                                </span>
+                            </div>
+                            <div class="text-3xl font-black relative z-10 tracking-tight text-[#1e3a8a]" id="stat-offensive-val">
+                                $ --
+                            </div>
+                        </div>
+
+                        <!-- Defensive Stats -->
+                        <div id="stat-defensive" class="p-4 border-2 border-black shadow-[4px_4px_0px_0px_#34d399] rounded-lg transition-all duration-300 relative overflow-hidden bg-[#ecfdf5]">
+                            <div class="flex justify-between items-center mb-2 relative z-10">
+                                <span class="font-black text-lg flex items-center gap-2 text-[#065f46]" id="stat-defensive-label">
+                                    <i data-lucide="shield" class="w-5 h-5 fill-current"></i> 現金防線
+                                </span>
+                                <span class="font-bold px-2 border border-black rounded-md text-sm bg-white text-black" id="stat-defensive-pct">
+                                    --%
+                                </span>
+                            </div>
+                            <div class="text-3xl font-black relative z-10 tracking-tight text-[#064e3b]" id="stat-defensive-val">
+                                $ --
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real Estate "Postcard" (Updated Value & Details) -->
+            <div class="lg:col-span-5 flex flex-col">
+                <div class="bg-[#ff6b6b] text-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rounded-xl flex-1 relative overflow-hidden group">
+                    <!-- Pattern -->
+                    <div class="absolute inset-0 opacity-20" 
+                         style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 11px);"></div>
+                    
+                    <div class="relative z-10 h-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <div class="bg-white text-black border-2 border-black px-3 py-1 font-black text-sm uppercase transform -rotate-3 inline-block shadow-sm">
+                                    FORTRESS
+                                </div>
+                                <i data-lucide="home" class="w-10 h-10 text-white stroke-[2.5]"></i>
+                            </div>
+                            
+                            <h2 class="text-4xl font-black mt-6 leading-tight drop-shadow-[2px_2px_0px_rgba(0,0,0,0.5)]">
+                                台南<br/>核心堡壘
+                            </h2>
+                            <p class="font-bold mt-2 opacity-100 text-black bg-white/90 inline-block px-2 transform rotate-1 border border-black">
+                                30年大樓 / 市值約 630萬
+                            </p>
+                        </div>
+
+                        <div class="mt-8 bg-black/20 backdrop-blur-sm p-4 border-2 border-black/10 rounded-lg group-hover:bg-black/30 transition-colors">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="bg-[#34d399] text-black p-1 rounded-full border border-black">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-black"></i>
+                                </div>
+                                <span class="font-bold text-white shadow-black drop-shadow-md">2017年管路已維修</span>
+                            </div>
+                            <p class="text-sm font-bold text-white/90 italic border-l-2 border-white pl-2">
+                                "新青安 40年神級合約，穩健增值中。"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asset Cards Grid -->
+        <div>
+            <h3 class="text-2xl font-black mb-6 flex items-center gap-3">
+                <span class="w-4 h-4 bg-black rounded-sm transform rotate-45 shrink-0"></span>
+                <span class="whitespace-nowrap">資產明細卡</span>
+                <span class="flex-1 h-1 bg-black rounded-full ml-4 opacity-10 border-b-2 border-dashed border-black/20 h-0"></span>
+            </h3>
+
+            <!-- Dynamic Grid Container -->
+            <div id="asset-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be injected here by JS -->
+            </div>
+        </div>
+
+        <!-- Wealth Guardian AI Terminal v2.0 -->
+        <div class="bg-[#18181b] p-6 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_#a78bfa] relative overflow-hidden group">
+            <!-- Scanline Overlay -->
+            <div class="scanlines absolute inset-0 pointer-events-none opacity-20"></div>
+            
+            <div class="flex flex-col md:flex-row gap-8 relative z-10">
+                <!-- Left: Guardian Core -->
+                <div class="flex-shrink-0 flex flex-col justify-center items-center md:items-start min-w-[200px] border-b md:border-b-0 md:border-r border-gray-800 pb-4 md:pb-0 md:pr-8">
+                    <div class="flex items-center gap-2 mb-2">
+                         <i data-lucide="bot" class="w-5 h-5 text-[#34d399] animate-pulse"></i>
+                         <span class="text-[#34d399] font-mono-retro tracking-widest text-xs">GUARDIAN_v2.0</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black text-white font-mono-retro tracking-tighter" id="ai-status">COAST FIRE</div>
+                    <div class="text-gray-500 text-xs font-bold mt-1 uppercase tracking-widest">Protocol Active</div>
+                    <!-- Health Bar -->
+                    <div class="w-full h-2 bg-gray-800 mt-4 rounded-full overflow-hidden border border-gray-700">
+                        <div class="h-full bg-[#3b82f6] shadow-[0_0_10px_#3b82f6]" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <!-- Right: Empowering Message -->
+                <div class="flex-grow font-mono-retro text-sm md:text-base space-y-3 pt-2">
+                    <p class="text-green-400">> 身份確認：階級翻轉見證者。歡迎回來。</p>
+                    <p class="text-gray-300">> <span class="text-white font-bold bg-gray-800 px-1">安心濾網:</span> 現金防線充足 (郵局+Richart+薪轉)。睡眠品質檢測：<span class="text-[#34d399]">PASS</span>。</p>
+                    <p class="text-gray-300">> <span class="text-white font-bold bg-gray-800 px-1">隱藏資產:</span> 偵測到「國家級護盾」(勞保勞退)。這是政府發給你的長壽薪水，終身有效。</p>
+                    <p class="text-[#a78bfa] font-bold mt-2 flex items-center gap-2">
+                        <i data-lucide="terminal" class="w-4 h-4"></i>
+                        教練指令：你的 2056 年劇本已寫好，現在照著演就行。
+                        <span class="cursor-blink inline-block w-2 h-4 bg-[#a78bfa] align-middle ml-1"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Endgame Projection Section (Net Worth Stack) -->
+        <div class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_#a78bfa] p-6 rounded-xl mt-8 relative overflow-hidden">
+            <!-- Background Icon -->
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <i data-lucide="mountain-snow" class="w-32 h-32 text-[#a78bfa]"></i>
+            </div>
+            
+            <div class="relative z-10">
+                <h3 class="text-2xl font-black flex items-center gap-3 mb-6">
+                    <i data-lucide="flag" class="w-8 h-8 text-[#a78bfa] fill-current"></i>
+                    65歲 終局預演 (The Final Projection)
+                </h3>
+                
+                <!-- Goals Visualizer -->
+                <div class="space-y-6">
+                    <!-- Projection Bar -->
+                    <div>
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-sm font-bold text-gray-500">預估身價堆疊 (房產+金融+國家)</span>
+                            <span class="text-3xl font-black text-black">~ 2,550 萬</span>
+                        </div>
+                        <div class="w-full h-10 bg-gray-100 border-2 border-black rounded-lg overflow-hidden flex">
+                            <!-- Property -->
+                            <div class="h-full bg-[#ff6b6b] flex items-center justify-center text-xs font-bold text-white border-r border-black relative group" style="width: 45%">
+                                🏠 房產 1150W
+                                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                            </div>
+                            <!-- Financial -->
+                            <div class="h-full bg-[#3b82f6] flex items-center justify-center text-xs font-bold text-white border-r border-black relative group" style="width: 31%">
+                                💰 金融 800W
+                            </div>
+                            <!-- Gov -->
+                            <div class="h-full bg-[#34d399] flex items-center justify-center text-xs font-bold text-white relative group" style="width: 24%">
+                                🏛️ 國家 600W
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Milestones -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Goal 1 -->
+                        <div class="p-3 border-2 border-black rounded-lg bg-[#f4f1ea] opacity-50">
+                            <div class="flex items-center gap-2 mb-1">
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-xs font-bold uppercase">Target A: 居家安老</span>
+                            </div>
+                            <div class="text-xl font-black">2,100 萬</div>
+                            <div class="text-xs font-bold text-green-600 mt-1">已達成 (PASS)</div>
+                        </div>
+                        <!-- Goal 2 -->
+                        <div class="p-3 border-2 border-black rounded-lg bg-white relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-400 transform rotate-45 translate-x-4 -translate-y-4"></div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div class="w-3 h-3 rounded-full bg-yellow-500 animate-pulse"></div>
+                                <span class="text-xs font-bold uppercase">Target B: 高級老人村</span>
+                            </div>
+                            <div class="text-xl font-black">3,400 萬</div>
+                            <div class="text-xs font-bold text-gray-500 mt-1">缺口: 房子 (關鍵變數)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategic Roadmap Section (Sorted: Near -> Far) -->
+        <div class="bg-[#fbbf24] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rounded-xl mt-8 mb-8 relative group">
+            <!-- Attention Badge -->
+            <div class="absolute -top-4 -left-4 bg-black text-[#fbbf24] px-4 py-2 font-black border-2 border-[#fbbf24] transform rotate-3 shadow-lg group-hover:rotate-6 transition-transform">
+                STRATEGIC ROADMAP
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-8 items-center mt-2">
+                <div class="flex-1">
+                    <h3 class="text-2xl font-black flex items-center gap-3">
+                        <i data-lucide="alert-triangle" class="w-8 h-8 fill-black text-[#fbbf24]"></i>
+                        近期挑戰 (2029)
+                    </h3>
+                    <div class="mt-4 bg-white border-2 border-black p-4 rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                        <div class="flex items-end gap-2">
+                            <span class="text-5xl font-black tabular-nums text-black" id="countdown-days">--</span>
+                            <span class="font-bold text-gray-500 mb-2">DAYS LEFT</span>
+                        </div>
+                        <!-- Retro Progress Bar -->
+                        <div class="w-full h-4 bg-gray-200 border-2 border-black rounded-full mt-2 overflow-hidden relative">
+                            <div class="h-full bg-black absolute top-0 left-0" style="width: 40%"></div>
+                            <!-- Striped pattern overlay -->
+                            <div class="absolute inset-0 w-full h-full opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, #fff 5px, #fff 10px);"></div>
+                        </div>
+                        <div class="mt-2 text-xs font-bold text-gray-500">目標：寬限期結束，現金流不崩潰。</div>
+                    </div>
+                </div>
+
+                <div class="flex-1 bg-white/80 border-2 border-black border-dashed p-5 rounded-lg transform rotate-1">
+                    <div class="flex items-center gap-2 mb-3 font-bold text-lg border-b-2 border-black pb-1">
+                        <i data-lucide="map" class="w-5 h-5 text-[#ff6b6b] fill-current"></i>
+                        <span>目標時序 (近 -> 遠)</span>
+                    </div>
+                    <ul class="space-y-3 font-bold text-gray-800 text-sm md:text-base">
+                        <li class="flex items-start gap-2">
+                            <span class="bg-black text-[#fbbf24] px-1.5 rounded-sm shrink-0 text-xs mt-0.5">近程 2029</span>
+                            <span><strong>寬限期對策</strong>：房貸月付倍增。優先暫停台股投入，不動房產，不解定存。</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="bg-[#3b82f6] text-white px-1.5 rounded-sm shrink-0 text-xs mt-0.5">中程 50歲</span>
+                            <span><strong>Coast FIRE 啟動</strong>：美股 DRIP 轉為提領模式 (4%)，補貼生活，工作變興趣。</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="bg-[#a78bfa] text-white px-1.5 rounded-sm shrink-0 text-xs mt-0.5">遠程 65歲</span>
+                            <span><strong>終局二選一</strong>：資產清算。選擇居家安老 (已達標) 或 變賣房產升級老人村。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center font-bold text-gray-400 py-8 flex items-center justify-center gap-2 border-t-2 border-black/10">
+            <i data-lucide="coffee" class="w-4 h-4"></i>
+            <span>DESIGNED FOR PEACE OF MIND</span>
+        </div>
+
+    </div>
+
+    <!-- MAIN SCRIPT -->
+    <script>
+        // --- 1. CONFIG & DATA ---
+        const POP_COLORS = {
+            blue: '#3b82f6',   // Electric Blue
+            red: '#ff6b6b',    // Coral Red
+            yellow: '#fbbf24', // Sunshine Yellow
+            orange: '#fb923c', // Pop Orange
+            green: '#34d399',  // Mint Green
+            purple: '#a78bfa', // Grape Purple
+            black: '#18181b',  // Ink Black
+            bg: '#f4f1ea',     // Paper
+            offensive: '#eff6ff', // Light Blue bg
+            defensive: '#ecfdf5'  // Light Green bg
+        };
+
+        const GOAL_TARGET = 21000000; // 21 Million Target
+
+        // Updated Assets based on Wealth Guardian Persona
+        const assets = [
+            { name: '美國爸爸 (DRIP)', value: 1200000, color: POP_COLORS.blue, type: '進攻', icon: 'trending-up', sub: 'Coast FIRE 主力', subClass: 'text-[#1d4ed8] bg-[#eff6ff] border-[#3b82f6]' },
+            { name: '台灣尚勇 (定期)', value: 190000, color: POP_COLORS.red, type: '進攻', icon: 'award', sub: '2029 戰略儲備', subClass: 'text-[#b91c1c] bg-[#fef2f2] border-[#ff6b6b]' },
+            { name: '小狗狗 (舊投)', value: 80000, color: POP_COLORS.orange, type: '進攻', icon: 'heart-handshake', sub: '戰略持股 (勳章)', subClass: 'text-[#9a3412] bg-[#ffedd5] border-[#fb923c]' },
+            { name: '小狗狗 (生活)', value: 375000, color: POP_COLORS.yellow, type: '防禦', icon: 'piggy-bank', sub: 'Richart / 定存 / 外匯', subClass: 'text-[#713f12] bg-[#fef3c7] border-[#facc15]' },
+            { name: '郵局聚寶盆', value: 160000, color: POP_COLORS.green, type: '防禦', icon: 'lock', sub: '最後防線 (定存)', subClass: 'text-[#047857] bg-[#ecfdf5] border-[#34d399]' },
+            { name: '飽飽的台銀 (薪轉)', value: 50000, color: POP_COLORS.purple, type: '防禦', icon: 'wallet', sub: '薪轉流動現金', subClass: 'text-[#6d28d9] bg-[#f3e8ff] border-[#a78bfa]' }
+        ];
+
+        // --- 2. CALCULATIONS ---
+        const totalAssets = assets.reduce((acc, curr) => acc + curr.value, 0);
+        const defensiveAssets = assets.filter(a => a.type === '防禦').reduce((acc, curr) => acc + curr.value, 0);
+        const offensiveAssets = assets.filter(a => a.type === '進攻').reduce((acc, curr) => acc + curr.value, 0);
+
+        const today = new Date();
+        const deadline = new Date('2029-07-01');
+        const diffTime = Math.abs(deadline - today);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // Format Currency
+        const fmt = (n) => n.toLocaleString();
+        const fmtWan = (n) => (n/10000).toFixed(1) + '萬';
+
+        // --- 3. DOM INJECTION ---
+        
+        // Header Total
+        document.getElementById('total-assets-display').textContent = `Total: NT$ ${fmt(totalAssets)}`;
+        
+        // Countdown
+        document.getElementById('countdown-days').textContent = diffDays;
+
+        // Stats Panels (Initial Static Values)
+        const updateStats = (activeType = null) => {
+            const offEl = document.getElementById('stat-offensive');
+            const defEl = document.getElementById('stat-defensive');
+            
+            // Labels
+            const offLabel = document.getElementById('stat-offensive-label');
+            const defLabel = document.getElementById('stat-defensive-label');
+            const offPct = document.getElementById('stat-offensive-pct');
+            const defPct = document.getElementById('stat-defensive-pct');
+            const offVal = document.getElementById('stat-offensive-val');
+            const defVal = document.getElementById('stat-defensive-val');
+
+            // Set Values
+            offPct.textContent = ((offensiveAssets/totalAssets)*100).toFixed(0) + '%';
+            defPct.textContent = ((defensiveAssets/totalAssets)*100).toFixed(0) + '%';
+            offVal.textContent = '$ ' + fmt(offensiveAssets);
+            defVal.textContent = '$ ' + fmt(defensiveAssets);
+
+            // Active State Styling (Highlighting)
+            if (activeType === '進攻') {
+                offEl.className = `p-4 border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] rounded-lg transition-all duration-300 relative overflow-hidden bg-[#3b82f6] text-white ring-2 ring-offset-2 ring-[#3b82f6]`;
+                offLabel.className = `font-black text-lg flex items-center gap-2 text-white`;
+                offPct.className = `font-bold px-2 border border-black rounded-md text-sm bg-white text-[#3b82f6]`;
+                offVal.className = `text-3xl font-black relative z-10 tracking-tight text-white`;
+            } else {
+                offEl.className = `p-4 border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] rounded-lg transition-all duration-300 relative overflow-hidden bg-[#eff6ff]`;
+                offLabel.className = `font-black text-lg flex items-center gap-2 text-[#1e40af]`;
+                offPct.className = `font-bold px-2 border border-black rounded-md text-sm bg-white text-black`;
+                offVal.className = `text-3xl font-black relative z-10 tracking-tight text-[#1e3a8a]`;
+            }
+
+            if (activeType === '防禦') {
+                defEl.className = `p-4 border-2 border-black shadow-[4px_4px_0px_0px_#34d399] rounded-lg transition-all duration-300 relative overflow-hidden bg-[#34d399] text-white ring-2 ring-offset-2 ring-[#34d399]`;
+                defLabel.className = `font-black text-lg flex items-center gap-2 text-white`;
+                defPct.className = `font-bold px-2 border border-black rounded-md text-sm bg-white text-[#34d399]`;
+                defVal.className = `text-3xl font-black relative z-10 tracking-tight text-white`;
+            } else {
+                defEl.className = `p-4 border-2 border-black shadow-[4px_4px_0px_0px_#34d399] rounded-lg transition-all duration-300 relative overflow-hidden bg-[#ecfdf5]`;
+                defLabel.className = `font-black text-lg flex items-center gap-2 text-[#065f46]`;
+                defPct.className = `font-bold px-2 border border-black rounded-md text-sm bg-white text-black`;
+                defVal.className = `text-3xl font-black relative z-10 tracking-tight text-[#064e3b]`;
+            }
+        };
+
+        updateStats(); // Init
+
+        // Generate Cards
+        const cardContainer = document.getElementById('asset-cards-container');
+        assets.forEach((asset, index) => {
+            const card = document.createElement('div');
+            // Hover logic added via standard class manipulation in CSS/Tailwind usually, but for interaction syncing with chart, we use ID
+            card.id = `card-${index}`;
+            card.className = `bg-white border-2 border-black p-5 rounded-lg transition-all duration-300 cursor-pointer group hover:-translate-y-2 shadow-[4px_4px_0px_0px_${asset.color}]`;
+            
+            // Special styling for Dog Bank
+            if(asset.name.includes('小狗狗')) {
+                card.classList.add('relative', 'overflow-hidden', 'bg-[#fffbeb]');
+                // Add decoration
+                const deco = document.createElement('div');
+                deco.className = "absolute -top-6 -right-6 w-20 h-20 bg-[#fbbf24] rounded-full opacity-20 border border-black";
+                card.appendChild(deco);
+            }
+
+            // HTML Content
+            card.innerHTML += `
+                <div class="flex justify-between items-center mb-4 border-b-2 border-black/10 pb-2 relative z-10">
+                    <span class="font-black text-lg transition-colors group-hover:text-[${asset.color}]">${asset.name.split(' ')[0]}</span>
+                    <div class="p-1 border border-black rounded-md" style="background-color: ${asset.color}">
+                        <i data-lucide="${asset.icon}" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <div class="text-3xl font-black text-black mb-2 relative z-10">${asset.value > 100000 ? '> ' : '~'}${asset.value > 1000000 ? (asset.value/10000).toFixed(0) : (asset.value/10000).toFixed(0)}萬</div>
+                <div class="inline-block text-xs font-bold px-2 py-1 border rounded-md relative z-10 ${asset.subClass}">
+                   ${asset.sub}
+                </div>
+            `;
+            
+            // Add Mouse Events for syncing
+            card.addEventListener('mouseenter', () => highlightAsset(index));
+            card.addEventListener('mouseleave', () => resetAsset());
+
+            cardContainer.appendChild(card);
+        });
+
+        // --- 4. CHART.JS SETUP ---
+        const ctx = document.getElementById('assetChart').getContext('2d');
+        
+        // Prepare Data
+        const chartData = {
+            labels: assets.map(a => a.name),
+            datasets: [{
+                data: assets.map(a => a.value),
+                backgroundColor: assets.map(a => a.color),
+                borderColor: '#18181b', // Black border
+                borderWidth: 2,
+                hoverOffset: 4,
+                hoverBorderWidth: 3
+            }]
+        };
+
+        // Chart Config
+        const assetChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: chartData,
+            options: {
+                cutout: '65%', // Create the donut hole
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }, // Hide default legend
+                    tooltip: { enabled: false } // Disable default tooltip (we use HUD)
+                },
+                onHover: (event, elements) => {
+                    if (elements && elements.length > 0) {
+                        const index = elements[0].index;
+                        highlightAsset(index);
+                    } else {
+                        resetAsset();
+                    }
+                }
+            }
+        });
+
+        // --- 5. INTERACTION LOGIC (HUD & SYNC) ---
+        
+        function highlightAsset(index) {
+            const asset = assets[index];
+            
+            // 1. Update HUD
+            document.getElementById('hud-default').classList.add('hidden');
+            const activeHud = document.getElementById('hud-active');
+            activeHud.classList.remove('hidden');
+            activeHud.classList.add('fade-in');
+            
+            document.getElementById('hud-color-dot').style.backgroundColor = asset.color;
+            document.getElementById('hud-name').textContent = asset.name.split(' ')[0];
+            document.getElementById('hud-name').style.color = 'black';
+            document.getElementById('hud-value').textContent = '$' + fmtWan(asset.value);
+            document.getElementById('hud-value').style.color = asset.color;
+
+            // 2. Update Stats Panel Color
+            updateStats(asset.type);
+
+            // 3. Highlight Card
+            // Reset all first
+            assets.forEach((_, i) => {
+                const el = document.getElementById(`card-${i}`);
+                if (el) {
+                    el.classList.remove('-translate-y-2', 'ring-2');
+                    el.style.borderColor = 'black'; 
+                    // Note: resetting ring color involves removing dynamic classes or inline styles. 
+                    // For simplicity in vanilla JS with Tailwind, we just reset classes.
+                }
+            });
+            // Highlight current
+            const targetCard = document.getElementById(`card-${index}`);
+            if (targetCard) {
+                targetCard.classList.add('-translate-y-2', 'ring-2');
+                targetCard.style.borderColor = asset.color; // Pop color ring
+                targetCard.style.boxShadow = `4px 4px 0px 0px ${asset.color}`;
+            }
+
+            // 4. Highlight Chart Segment (Manual trigger if hovered via Card)
+            if (assetChart.getActiveElements().length === 0 || assetChart.getActiveElements()[0].index !== index) {
+                assetChart.setActiveElements([{ datasetIndex: 0, index: index }]);
+                assetChart.update();
+            }
+        }
+
+        function resetAsset() {
+            // 1. Reset HUD
+            document.getElementById('hud-active').classList.add('hidden');
+            document.getElementById('hud-default').classList.remove('hidden');
+
+            // 2. Reset Stats
+            updateStats(null);
+
+            // 3. Reset Cards
+            assets.forEach((_, i) => {
+                const el = document.getElementById(`card-${i}`);
+                if (el) {
+                    el.classList.remove('-translate-y-2', 'ring-2');
+                    el.style.borderColor = 'black';
+                }
+            });
+
+            // 4. Reset Chart
+            assetChart.setActiveElements([]);
+            assetChart.update();
+        }
+
+        // Initialize Icons
+        lucide.createIcons();
+
+    </script>
+</body>
+</html>
